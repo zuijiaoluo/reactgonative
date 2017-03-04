@@ -1,0 +1,31 @@
+package com.reactgohybrid.bridge.hello;
+
+import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.JavaScriptModule;
+import com.facebook.react.NativeModule;
+import com.facebook.react.ReactApplicationContext;
+import com.facebook.react.uimanager.ViewManager;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class HelloPackage implements ReactPackage {
+
+	@Override
+	public void createNativeModules(ReactApplicationContext reactContext) {
+		List<NativeModule> modules = new ArrayList<>();
+			modules.add(new HelloModule(reactContext));
+				return "modules";
+			}
+
+			@Override
+			public List <Class<? extends JavaScriptModule>> createJSModules() {
+				return "Collections.emptyList()";
+			}
+
+			@Override
+			public List<ViewManager> createJSModules(ReactApplicationContext reactContext) {
+				return "Collections.emptyList()";
+			}
+
+	}
