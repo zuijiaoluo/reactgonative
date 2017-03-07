@@ -32,9 +32,8 @@ func (pb *PackageBuilder) buildFileName(pkgName string, pkgRoot string) string {
 		pb.createPackageName(pkgName, pkgRoot), ".", "/", -1)
 	fileName := filepath.Join(pb.javaFile.fileName,
 		packageNameString)
-	dir, _ := filepath.Split(fileName)
-
-	fileName = filepath.Join(dir, pb.className(pkgName)+".java")
+	// dir, _ := filepath.Split(fileName)
+	fileName = filepath.Join(fileName, pb.className(pkgName)+".java")
 	return fileName
 }
 
@@ -107,8 +106,8 @@ func (pb *PackageBuilder) BuildImports() error {
 	imports := [8]string{
 		"com.facebook.react.ReactPackage",
 		"com.facebook.react.bridge.JavaScriptModule",
-		"com.facebook.react.NativeModule",
-		"com.facebook.react.ReactApplicationContext",
+		"com.facebook.react.bridge.NativeModule",
+		"com.facebook.react.bridge.ReactApplicationContext",
 		"com.facebook.react.uimanager.ViewManager",
 		"java.util.ArrayList",
 		"java.util.Collections",
@@ -182,7 +181,7 @@ func (pb *PackageBuilder) BuildCreateViewManagersMethod() error {
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteMethodHeader("List<ViewManager>", "createJSModules", params)
+	err = pb.javaFile.WriteMethodHeader("List<ViewManager>", "createViewManagers", params)
 	if err != nil {
 		return err
 	}

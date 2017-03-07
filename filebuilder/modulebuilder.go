@@ -35,9 +35,8 @@ func (mb *ModuleBuilder) buildFileName(pkgName string, pkgRoot string) string {
 		mb.createPackageName(pkgName, pkgRoot), ".", "/", -1)
 	fileName := filepath.Join(mb.javaFile.fileName,
 		packageNameString)
-	dir, _ := filepath.Split(fileName)
-
-	fileName = filepath.Join(dir, mb.className(pkgName)+".java")
+	// dir, _ := filepath.Split(fileName)
+	fileName = filepath.Join(fileName, mb.className(pkgName)+".java")
 	return fileName
 }
 
@@ -239,7 +238,8 @@ func (mb *ModuleBuilder) buildReactMethodBody(g *types.GoFunction, ret *types.Go
 }
 
 func (mb *ModuleBuilder) methodMain(g *types.GoFunction, ret *types.GoParams, pkgName string) error {
-	methodCall := mb.importedPackageName(pkgName) + "." + g.Name + "()"
+
+	methodCall := mb.importedPackageName(pkgName) + "." + strings.ToLower(g.Name) + "(" + mb.buildMethodCallParams(&g.Params) + ")"
 	if ret.T != "" {
 		methodCall = types.GoToJava(ret.T) + " returnParam1 = " + methodCall
 	}
@@ -254,6 +254,18 @@ func (mb *ModuleBuilder) methodMain(g *types.GoFunction, ret *types.GoParams, pk
 		}
 	}
 	return nil
+}
+
+func (mb *ModuleBuilder) buildMethodCallParams(g *[]types.GoParams) string {
+	paramsMap := mb.ParamsToMap(*g)
+	resp := ""
+	for _, val := range paramsMap {
+		if len(resp) != 0 {
+			resp = resp + ", "
+		}
+		resp = resp + val
+	}
+	return resp
 }
 
 func (mb *ModuleBuilder) wrapTryCatch(body func() error, g *types.GoFunction, ret *types.GoParams, catchMsg string) error {

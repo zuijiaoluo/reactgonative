@@ -14,7 +14,7 @@ var defaultPackageRoot = "com.reactgohybrid"
 
 func main() {
 	loggers.Info("Starting")
-	tList := goparser.Parsing()
+	tList := goparser.Parsing("/golang.org/x/mobile/example/bind/hello")
 	for _, t := range tList {
 		if t.IsValid() {
 			loggers.Infof("Package name %s", t.PackageName)
