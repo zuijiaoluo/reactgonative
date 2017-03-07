@@ -1,7 +1,10 @@
 package filebuilder
 
 import (
+	"errors"
 	"os"
+	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/steve-winter/loggers"
@@ -9,20 +12,35 @@ import (
 )
 
 type JavaFile struct {
-	f           *os.File
-	fileName    string
-	packageRoot string
-	depth       int
+	f            *os.File
+	fileName     string
+	packageRoot  string
+	depth        int
+	shouldIndent bool
 }
 
 func NewJavaFile(name string, root string) (javaFile *JavaFile) {
 	return &JavaFile{
-		fileName:    name,
-		packageRoot: root,
+		fileName:     name,
+		packageRoot:  root,
+		shouldIndent: false,
 	}
 }
 
+func (jf *JavaFile) SetFileName(name string) error {
+	if jf.f != nil {
+		return errors.New("File already open")
+	}
+	jf.fileName = name
+	return nil
+}
+
 func (jf *JavaFile) CreateFile() error {
+	dir, _ := filepath.Split(jf.fileName)
+	err := os.MkdirAll(dir, 0777)
+	if err != nil {
+		return err
+	}
 	f, err := os.Create(jf.fileName)
 	if err != nil {
 		return err
@@ -32,13 +50,7 @@ func (jf *JavaFile) CreateFile() error {
 }
 
 func (jf *JavaFile) WritePackageLine(packageName string) error {
-	var line string
-	if jf.packageRoot == "" {
-		line = "package " + "bridge." + packageName + ";"
-	} else {
-		line = "package " + jf.packageRoot + ".bridge." + packageName + ";"
-	}
-	err := jf.writeLineFlat(line)
+	err := jf.writeLineFlat("package " + packageName + ";")
 	if err != nil {
 		loggers.Errorf("******************** %v\n", err)
 	}
@@ -76,7 +88,7 @@ func (jf *JavaFile) WriteMethodHeader(returnType string, methodName string, para
 }
 
 func (jf *JavaFile) WriteMethodBody(body string) error {
-	return jf.writeLine(body + ";")
+	return jf.writeLineN(body + ";")
 }
 
 func (jf *JavaFile) WriteCloseTag() error {
@@ -110,11 +122,11 @@ func (jf *JavaFile) classModifier(modifier string, modifierName string) string {
 }
 
 func (jf *JavaFile) WriteTry() error {
-	return jf.writeLineN("try {")
+	return jf.writeLine("try {")
 }
 
 func (jf *JavaFile) WriteCatch(msg string) error {
-	err := jf.writeLineN("} catch(Exception e) {")
+	err := jf.writeLine("} catch(Exception e) {")
 	if err != nil {
 		return err
 	}
@@ -131,30 +143,59 @@ func (jf *JavaFile) WriteReturn(ret string) error {
 
 func (jf *JavaFile) writeLine(line string) error {
 	indent := ""
-	if strings.EqualFold(line, "}") {
-		jf.depth = jf.depth - 2
-	}
+	jf.shouldStep(line)
 	for i := 0; i < jf.depth; i++ {
 		indent = indent + "\t"
 	}
 	err := jf.writeLineFlat(indent + line)
 	if !strings.EqualFold(line, "}") {
-		jf.depth = jf.depth + 1
+		jf.shouldIndent = true
 	}
 	return err
 }
 
 func (jf *JavaFile) writeLineN(line string) error {
 	indent := ""
+	jf.shouldStep(line)
 	for i := 0; i < jf.depth; i++ {
 		indent = indent + "\t"
 	}
+	jf.shouldIndent = false
 	return jf.writeLineFlat(indent + line)
 }
 
+func (jf *JavaFile) shouldStep(line string) {
+	if strings.EqualFold(line, "}") {
+		jf.depth = jf.depth - 1
+		jf.shouldIndent = false
+		loggers.Infof("*** ROUTE 1\nLine %s: \n \tDepth: %s \n\t ShouldIndent: %t", line, strconv.Itoa(jf.depth), jf.shouldIndent)
+		return
+	}
+	if strings.Contains(line, "}") {
+		jf.depth = jf.depth - 1
+		// oldShouldIndent := jf.shouldIndent
+		jf.shouldIndent = strings.Contains(line, "{")
+		// if !jf.shouldIndent {
+		// 	jf.depth = jf.depth + 1
+		// } else {
+		// 	jf.depth = jf.depth - 1
+		// }
+		// if oldShouldIndent {
+		// 	jf.shouldIndent = oldShouldIndent
+		// }
+		loggers.Infof("*** ROUTE 2\nLine %s: \n \tDepth: %s \n\t ShouldIndent: %t", line, strconv.Itoa(jf.depth), jf.shouldIndent)
+		return
+	}
+	if jf.shouldIndent {
+		jf.depth = jf.depth + 1
+		loggers.Infof("*** ROUTE 3\nLine %s: \n \tDepth: %s \n\t ShouldIndent: %t", line, strconv.Itoa(jf.depth), jf.shouldIndent)
+		return
+	}
+	loggers.Infof("*** ROUTE 4\nLine %s: \n \tDepth: %s \n\t ShouldIndent: %t", line, strconv.Itoa(jf.depth), jf.shouldIndent)
+}
+
 func (jf *JavaFile) writeLineFlat(line string) error {
-	loggers.Infof("Writing: %s to %s", line, jf.f.Name())
-	_, err := jf.f.WriteString(line + "\n")
+	_, err := jf.f.WriteString(line + " I: " + strconv.Itoa(jf.depth) + "\n")
 	if err == nil {
 		err = jf.f.Sync()
 	}

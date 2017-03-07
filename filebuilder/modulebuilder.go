@@ -1,6 +1,7 @@
 package filebuilder
 
 import (
+	"path/filepath"
 	"strings"
 
 	"github.com/steve-winter/loggers"
@@ -19,8 +20,36 @@ func NewModuleBuilder(name string, root string) ModuleBuilder {
 	}
 }
 
+func (mb *ModuleBuilder) createPackageName(name string, root string) string {
+	var line string
+	if root == "" {
+		line = "bridge." + name
+	} else {
+		line = root + ".bridge." + name
+	}
+	return line
+}
+
+func (mb *ModuleBuilder) buildFileName(pkgName string, pkgRoot string) string {
+	packageNameString := strings.Replace(
+		mb.createPackageName(pkgName, pkgRoot), ".", "/", -1)
+	fileName := filepath.Join(mb.javaFile.fileName,
+		packageNameString)
+	dir, _ := filepath.Split(fileName)
+
+	fileName = filepath.Join(dir, mb.className(pkgName)+".java")
+	return fileName
+}
+
 func (mb *ModuleBuilder) BuildModule(g *types.GoType) (string, error) {
-	err := mb.javaFile.WritePackageLine(g.PackageName)
+	fileName := mb.buildFileName(g.PackageName, mb.javaFile.packageRoot)
+	mb.javaFile.SetFileName(fileName)
+	loggers.Infof("Filename is: %s", fileName)
+	err := mb.Create()
+	if err != nil {
+		loggers.Errorf("Error %v", err)
+	}
+	err = mb.javaFile.WritePackageLine(mb.createPackageName(g.PackageName, mb.javaFile.packageRoot))
 	if err != nil {
 		return "", err
 	}
@@ -169,7 +198,6 @@ func (mb *ModuleBuilder) BuildGetName(g *types.GoType) error {
 
 func (mb *ModuleBuilder) BuildReactMethods(g *[]types.GoFunction, ret *[]types.GoParams, pkgName string) error {
 	for i, val := range *g {
-		loggers.Infof("BROKEN here with int %b, size: %b", i, len(*ret))
 		err := mb.BuildReactMethod(&val, &(*ret)[i], pkgName)
 		if err != nil {
 			return err

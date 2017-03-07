@@ -13,18 +13,17 @@ func main() {
 	loggers.Info("Starting")
 	tList := goparser.Parsing()
 	for _, t := range tList {
-		typeString := module(t)
-		packageBuild(typeString, t.PackageName)
+		if t.IsValid() {
+			loggers.Infof("Package name %s", t.PackageName)
+			typeString := module(t)
+			packageBuild(typeString, t.PackageName)
+		}
 	}
 }
 
 func module(t types.GoType) string {
 	m := filebuilder.NewModuleBuilder("/Users/SteveWinter/Development/golang/src/github.com/steve-winter/reactgonative/generated/test1",
 		"com.reactgohybrid")
-	err := m.Create()
-	if err != nil {
-		loggers.Errorf("Error %v", err)
-	}
 	typeString, err := m.BuildModule(&t)
 	if err != nil {
 		loggers.Errorf("Error %v", err)
