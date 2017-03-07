@@ -144,7 +144,7 @@ func (pb *PackageBuilder) BuildNativeModulesMethod(packageName string) error {
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteReturn("modules")
+	err = pb.javaFile.WriteReturnDynamic("modules")
 	if err != nil {
 		return err
 	}
@@ -164,7 +164,7 @@ func (pb *PackageBuilder) BuildCreateJSModulesMethod() error {
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteReturn("Collections.emptyList()")
+	err = pb.javaFile.WriteReturnDynamic("Collections.emptyList()")
 	if err != nil {
 		return err
 	}
@@ -186,7 +186,7 @@ func (pb *PackageBuilder) BuildCreateViewManagersMethod() error {
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteReturn("Collections.emptyList()")
+	err = pb.javaFile.WriteReturnDynamic("Collections.emptyList()")
 	if err != nil {
 		return err
 	}

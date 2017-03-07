@@ -185,7 +185,7 @@ func (mb *ModuleBuilder) BuildGetName(g *types.GoType) error {
 		return err
 	}
 
-	err = mb.javaFile.WriteReturn(mb.className(g.PackageName))
+	err = mb.javaFile.WriteReturnStatic(mb.className(g.PackageName))
 	if err != nil {
 		return err
 	}
