@@ -1,6 +1,11 @@
 package filebuilder
 
-import "strings"
+import (
+	"path/filepath"
+	"strings"
+
+	"github.com/steve-winter/loggers"
+)
 
 type PackageBuilder struct {
 	javaFile *JavaFile
@@ -12,8 +17,36 @@ func NewPackageBuilder(name string, root string) PackageBuilder {
 	}
 }
 
+func (pb *PackageBuilder) createPackageName(name string, root string) string {
+	var line string
+	if root == "" {
+		line = "bridge." + name
+	} else {
+		line = root + ".bridge." + name
+	}
+	return line
+}
+
+func (pb *PackageBuilder) buildFileName(pkgName string, pkgRoot string) string {
+	packageNameString := strings.Replace(
+		pb.createPackageName(pkgName, pkgRoot), ".", "/", -1)
+	fileName := filepath.Join(pb.javaFile.fileName,
+		packageNameString)
+	dir, _ := filepath.Split(fileName)
+
+	fileName = filepath.Join(dir, pb.className(pkgName)+".java")
+	return fileName
+}
+
 func (pb *PackageBuilder) BuildPackage(typeString string, packageName string) error {
-	err := pb.javaFile.WritePackageLine(packageName)
+	fileName := pb.buildFileName(packageName, pb.javaFile.packageRoot)
+	pb.javaFile.SetFileName(fileName)
+	loggers.Infof("Filename is: %s", fileName)
+	err := pb.Create()
+	if err != nil {
+		return err
+	}
+	err = pb.javaFile.WritePackageLine(pb.createPackageName(packageName, pb.javaFile.packageRoot))
 	if err != nil {
 		return err
 	}
@@ -99,7 +132,7 @@ func (pb *PackageBuilder) BuildNativeModulesMethod(packageName string) error {
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteMethodHeader("void", "createNativeModules", params)
+	err = pb.javaFile.WriteMethodHeader("List<NativeModule>", "createNativeModules", params)
 	if err != nil {
 		return err
 	}

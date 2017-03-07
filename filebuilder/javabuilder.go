@@ -4,7 +4,6 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/steve-winter/loggers"
@@ -138,7 +137,7 @@ func (jf *JavaFile) WriteCatch(msg string) error {
 }
 
 func (jf *JavaFile) WriteReturn(ret string) error {
-	return jf.writeLine("return \"" + ret + "\";")
+	return jf.writeLine("return " + ret + ";")
 }
 
 func (jf *JavaFile) writeLine(line string) error {
@@ -168,7 +167,6 @@ func (jf *JavaFile) shouldStep(line string) {
 	if strings.EqualFold(line, "}") {
 		jf.depth = jf.depth - 1
 		jf.shouldIndent = false
-		loggers.Infof("*** ROUTE 1\nLine %s: \n \tDepth: %s \n\t ShouldIndent: %t", line, strconv.Itoa(jf.depth), jf.shouldIndent)
 		return
 	}
 	if strings.Contains(line, "}") {
@@ -183,19 +181,16 @@ func (jf *JavaFile) shouldStep(line string) {
 		// if oldShouldIndent {
 		// 	jf.shouldIndent = oldShouldIndent
 		// }
-		loggers.Infof("*** ROUTE 2\nLine %s: \n \tDepth: %s \n\t ShouldIndent: %t", line, strconv.Itoa(jf.depth), jf.shouldIndent)
 		return
 	}
 	if jf.shouldIndent {
 		jf.depth = jf.depth + 1
-		loggers.Infof("*** ROUTE 3\nLine %s: \n \tDepth: %s \n\t ShouldIndent: %t", line, strconv.Itoa(jf.depth), jf.shouldIndent)
 		return
 	}
-	loggers.Infof("*** ROUTE 4\nLine %s: \n \tDepth: %s \n\t ShouldIndent: %t", line, strconv.Itoa(jf.depth), jf.shouldIndent)
 }
 
 func (jf *JavaFile) writeLineFlat(line string) error {
-	_, err := jf.f.WriteString(line + " I: " + strconv.Itoa(jf.depth) + "\n")
+	_, err := jf.f.WriteString(line + "\n")
 	if err == nil {
 		err = jf.f.Sync()
 	}
