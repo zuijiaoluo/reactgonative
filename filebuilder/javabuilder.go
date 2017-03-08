@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/steve-winter/loggers"
 	"github.com/steve-winter/reactgonative/types"
 )
 
@@ -50,9 +49,6 @@ func (jf *JavaFile) CreateFile() error {
 
 func (jf *JavaFile) WritePackageLine(packageName string) error {
 	err := jf.writeLineFlat("package " + packageName + ";")
-	if err != nil {
-		loggers.Errorf("******************** %v\n", err)
-	}
 	return err
 }
 

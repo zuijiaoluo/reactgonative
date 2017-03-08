@@ -3,8 +3,6 @@ package filebuilder
 import (
 	"path/filepath"
 	"strings"
-
-	"github.com/steve-winter/loggers"
 )
 
 type PackageBuilder struct {
@@ -41,7 +39,6 @@ func (pb *PackageBuilder) buildFileName(pkgName string, pkgRoot string) string {
 func (pb *PackageBuilder) BuildPackage(typeString string, packageName string) error {
 	fileName := pb.buildFileName(packageName, pb.javaFile.packageRoot)
 	pb.javaFile.SetFileName(fileName)
-	loggers.Infof("Filename is: %s", fileName)
 	err := pb.Create()
 	if err != nil {
 		return err

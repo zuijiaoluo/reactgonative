@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 
-	"github.com/steve-winter/loggers"
 	"github.com/steve-winter/reactgonative/filebuilder"
 	"github.com/steve-winter/reactgonative/goparser"
 	"github.com/steve-winter/reactgonative/types"
@@ -11,15 +11,22 @@ import (
 
 var defaultAndroidRoot = "app/src/main/java/"
 var defaultPackageRoot = "com.reactgohybrid"
+var defaultGoPackage = "/golang.org/x/mobile/example/bind/hello"
 
 func main() {
-	loggers.Info("Starting")
-	tList := goparser.Parsing("/golang.org/x/mobile/example/bind/hello")
+	fmt.Printf("Processing package %s\n", defaultGoPackage)
+	tList, err := goparser.Parsing(defaultGoPackage)
+	if err != nil {
+		fmt.Printf("Unable to parse file - %s\n", err.Error())
+	}
 	for _, t := range tList {
 		if t.IsValid() {
-			loggers.Infof("Package name %s", t.PackageName)
+			fmt.Printf("\tPackagename created: %s\n", t.PackageName)
 			typeString := module(t)
-			packageBuild(typeString, t.PackageName)
+			err := packageBuild(typeString, t.PackageName)
+			if err != nil {
+				fmt.Printf("Unable to build package - %s\n", err.Error())
+			}
 		}
 	}
 }
@@ -29,29 +36,30 @@ func module(t types.GoType) string {
 		defaultPackageRoot)
 	typeString, err := m.BuildModule(&t)
 	if err != nil {
-		loggers.Errorf("Error %v", err)
+		fmt.Printf("Unable to build module - %s\n", err.Error())
+		return ""
 	}
 	err = m.Close()
 	if err != nil {
-		loggers.Errorf("Error %v", err)
+		fmt.Printf("Unable to build module - %s\n", err.Error())
+		return ""
 	}
 	return typeString
 }
 
-func packageBuild(typeString string, packageName string) (string, error) {
+func packageBuild(typeString string, packageName string) error {
 	m := filebuilder.NewPackageBuilder(defaultAndroidRoot,
 		defaultPackageRoot)
 
 	err := m.BuildPackage(typeString, packageName)
 	if err != nil {
-		loggers.Errorf("Error %v", err)
-		return "", err
+		return err
 	}
 	err = m.Close()
 	if err != nil {
-		loggers.Errorf("Error %v", err)
+		return err
 	}
-	return typeString, nil
+	return nil
 }
 
 func goToJavaType(javaType string) string {
