@@ -9,9 +9,12 @@ import (
 	"github.com/steve-winter/reactgonative/types"
 )
 
+var defaultAndroidRoot = "app/src/main/java/"
+var defaultPackageRoot = "com.reactgohybrid"
+
 func main() {
 	loggers.Info("Starting")
-	tList := goparser.Parsing()
+	tList := goparser.Parsing("/golang.org/x/mobile/example/bind/hello")
 	for _, t := range tList {
 		if t.IsValid() {
 			loggers.Infof("Package name %s", t.PackageName)
@@ -22,8 +25,8 @@ func main() {
 }
 
 func module(t types.GoType) string {
-	m := filebuilder.NewModuleBuilder("/Users/SteveWinter/Development/golang/src/github.com/steve-winter/reactgonative/generated/test1",
-		"com.reactgohybrid")
+	m := filebuilder.NewModuleBuilder(defaultAndroidRoot,
+		defaultPackageRoot)
 	typeString, err := m.BuildModule(&t)
 	if err != nil {
 		loggers.Errorf("Error %v", err)
@@ -36,8 +39,9 @@ func module(t types.GoType) string {
 }
 
 func packageBuild(typeString string, packageName string) (string, error) {
-	m := filebuilder.NewPackageBuilder("/Users/SteveWinter/Development/golang/src/github.com/steve-winter/reactgonative/generated/test1",
-		"com.reactgohybrid")
+	m := filebuilder.NewPackageBuilder(defaultAndroidRoot,
+		defaultPackageRoot)
+
 	err := m.BuildPackage(typeString, packageName)
 	if err != nil {
 		loggers.Errorf("Error %v", err)

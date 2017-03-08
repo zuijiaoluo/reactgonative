@@ -12,9 +12,9 @@ import (
 	"github.com/steve-winter/reactgonative/types"
 )
 
-func Parsing() []types.GoType {
+func Parsing(pkgIdentifier string) []types.GoType {
 	folder := filepath.Join(os.Getenv("GOPATH"), "src")
-	folder = filepath.Join(folder, "/golang.org/x/mobile/example/bind/hello")
+	folder = filepath.Join(folder, pkgIdentifier)
 	fset := token.NewFileSet()
 	pkgs, e := parser.ParseDir(fset, folder, nil, 0)
 	if e != nil {

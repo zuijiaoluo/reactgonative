@@ -32,9 +32,9 @@ func (pb *PackageBuilder) buildFileName(pkgName string, pkgRoot string) string {
 		pb.createPackageName(pkgName, pkgRoot), ".", "/", -1)
 	fileName := filepath.Join(pb.javaFile.fileName,
 		packageNameString)
-	dir, _ := filepath.Split(fileName)
+	// dir, _ := filepath.Split(fileName)
+	fileName = filepath.Join(fileName, pb.className(pkgName)+".java")
 
-	fileName = filepath.Join(dir, pb.className(pkgName)+".java")
 	return fileName
 }
 
@@ -107,8 +107,8 @@ func (pb *PackageBuilder) BuildImports() error {
 	imports := [8]string{
 		"com.facebook.react.ReactPackage",
 		"com.facebook.react.bridge.JavaScriptModule",
-		"com.facebook.react.NativeModule",
-		"com.facebook.react.ReactApplicationContext",
+		"com.facebook.react.bridge.NativeModule",
+		"com.facebook.react.bridge.ReactApplicationContext",
 		"com.facebook.react.uimanager.ViewManager",
 		"java.util.ArrayList",
 		"java.util.Collections",
@@ -144,7 +144,7 @@ func (pb *PackageBuilder) BuildNativeModulesMethod(packageName string) error {
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteReturn("modules")
+	err = pb.javaFile.WriteReturnDynamic("modules")
 	if err != nil {
 		return err
 	}
@@ -164,7 +164,7 @@ func (pb *PackageBuilder) BuildCreateJSModulesMethod() error {
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteReturn("Collections.emptyList()")
+	err = pb.javaFile.WriteReturnDynamic("Collections.emptyList()")
 	if err != nil {
 		return err
 	}
@@ -182,11 +182,11 @@ func (pb *PackageBuilder) BuildCreateViewManagersMethod() error {
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteMethodHeader("List<ViewManager>", "createJSModules", params)
+	err = pb.javaFile.WriteMethodHeader("List<ViewManager>", "createViewManagers", params)
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteReturn("Collections.emptyList()")
+	err = pb.javaFile.WriteReturnDynamic("Collections.emptyList()")
 	if err != nil {
 		return err
 	}
