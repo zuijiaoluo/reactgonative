@@ -1,6 +1,6 @@
 # ReactGoNative
 
-Linux: Build Status (integration with CI to follow post test suite)
+Linux: [![Build Status](https://travis-ci.org/steve-winter/reactgonative.svg?branch=master)](https://travis-ci.org/steve-winter/reactgonative)
 
 ## Current Status
 
