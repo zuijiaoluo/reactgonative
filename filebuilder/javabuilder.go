@@ -9,6 +9,7 @@ import (
 	"github.com/steve-winter/reactgonative/types"
 )
 
+//JavaFile represents a file pointer and functions to create a Java class
 type JavaFile struct {
 	f            *os.File
 	fileName     string
@@ -17,6 +18,7 @@ type JavaFile struct {
 	shouldIndent bool
 }
 
+//NewJavaFile creates a new uninitialized JavaFile
 func NewJavaFile(name string, root string) (javaFile *JavaFile) {
 	return &JavaFile{
 		fileName:     name,

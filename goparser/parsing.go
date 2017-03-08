@@ -11,6 +11,7 @@ import (
 	"github.com/steve-winter/reactgonative/types"
 )
 
+//Parsing locates the Go package at pkgIdentifier and generates an array of GoType representing each package, or an error
 func Parsing(pkgIdentifier string) ([]types.GoType, error) {
 	folder := filepath.Join(os.Getenv("GOPATH"), "src")
 	folder = filepath.Join(folder, pkgIdentifier)
