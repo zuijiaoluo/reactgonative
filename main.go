@@ -51,7 +51,7 @@ func packageBuild(typeString string, packageName string) error {
 	m := filebuilder.NewPackageBuilder(defaultAndroidRoot,
 		defaultPackageRoot)
 
-	err := m.BuildPackage(typeString, packageName)
+	err := m.BuildPackage(packageName)
 	if err != nil {
 		return err
 	}
