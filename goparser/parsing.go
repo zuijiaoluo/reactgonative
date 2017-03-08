@@ -8,19 +8,16 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/steve-winter/loggers"
 	"github.com/steve-winter/reactgonative/types"
 )
 
-func Parsing(pkgIdentifier string) []types.GoType {
+func Parsing(pkgIdentifier string) ([]types.GoType, error) {
 	folder := filepath.Join(os.Getenv("GOPATH"), "src")
 	folder = filepath.Join(folder, pkgIdentifier)
 	fset := token.NewFileSet()
 	pkgs, e := parser.ParseDir(fset, folder, nil, 0)
 	if e != nil {
-		loggers.Infof("Filename: %s", folder)
-		loggers.Fatal(e)
-		return []types.GoType{}
+		return []types.GoType{}, e
 	}
 	typeList := make([]types.GoType, 1)
 	for _, pkg := range pkgs {
@@ -29,7 +26,7 @@ func Parsing(pkgIdentifier string) []types.GoType {
 			typeList = append(typeList, parseFile(fset, f, pkgName))
 		}
 	}
-	return typeList
+	return typeList, nil
 }
 
 func parseFile(fset *token.FileSet, f *ast.File, pkgName string) types.GoType {
@@ -65,7 +62,7 @@ func parseFunc(x *ast.FuncDecl, m *types.GoType) {
 		parseParams(x, m)
 		parseReturn(x, m)
 	} else {
-		loggers.Infof("Function not exported \"%s\".\"%s\"\n", m.PackageName, x.Name.Name)
+
 	}
 }
 

@@ -4,7 +4,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/steve-winter/loggers"
 	"github.com/steve-winter/reactgonative/types"
 )
 
@@ -43,10 +42,9 @@ func (mb *ModuleBuilder) buildFileName(pkgName string, pkgRoot string) string {
 func (mb *ModuleBuilder) BuildModule(g *types.GoType) (string, error) {
 	fileName := mb.buildFileName(g.PackageName, mb.javaFile.packageRoot)
 	mb.javaFile.SetFileName(fileName)
-	loggers.Infof("Filename is: %s", fileName)
 	err := mb.Create()
 	if err != nil {
-		loggers.Errorf("Error %v", err)
+		return "", err
 	}
 	err = mb.javaFile.WritePackageLine(mb.createPackageName(g.PackageName, mb.javaFile.packageRoot))
 	if err != nil {
