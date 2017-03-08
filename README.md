@@ -1,6 +1,7 @@
 # ReactGoNative
 
-Linux: [![Build Status](https://travis-ci.org/steve-winter/reactgonative.svg?branch=master)](https://travis-ci.org/steve-winter/reactgonative)
+[![Build Status](https://travis-ci.org/steve-winter/reactgonative.svg?branch=master)](https://travis-ci.org/steve-winter/reactgonative)
+[![Code Climate](https://codeclimate.com/github/steve-winter/reactgonative/badges/gpa.svg)](https://codeclimate.com/github/steve-winter/reactgonative)
 
 ## Current Status
 
