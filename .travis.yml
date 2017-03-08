@@ -6,8 +6,11 @@ go:
   - 1.8
   - master
 
-script:
- - go test -v ./... -coverprofile=coverage.txt -covermode=atomic
+before_install:
+  - go get -t -v ./...
+
+ script:
+  - ./codecovtest.sh
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
