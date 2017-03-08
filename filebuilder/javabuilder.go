@@ -142,6 +142,7 @@ func (jf *JavaFile) WriteReturnDynamic(ret string) error {
 
 func (jf *JavaFile) WriteReturnStatic(ret string) error {
 	return jf.writeLine("return \"" + ret + "\";")
+
 }
 
 func (jf *JavaFile) writeLine(line string) error {

@@ -41,6 +41,7 @@ func module(t types.GoType) string {
 func packageBuild(typeString string, packageName string) (string, error) {
 	m := filebuilder.NewPackageBuilder(defaultAndroidRoot,
 		defaultPackageRoot)
+
 	err := m.BuildPackage(typeString, packageName)
 	if err != nil {
 		loggers.Errorf("Error %v", err)

@@ -34,6 +34,7 @@ func (pb *PackageBuilder) buildFileName(pkgName string, pkgRoot string) string {
 		packageNameString)
 	// dir, _ := filepath.Split(fileName)
 	fileName = filepath.Join(fileName, pb.className(pkgName)+".java")
+
 	return fileName
 }
 
