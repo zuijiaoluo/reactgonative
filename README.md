@@ -26,8 +26,8 @@ Communication between React and Go are via the use of [Promises](https://develop
 
 ### Usage
 To install:
-`go get github.com/steve-winter/reactgonative`
+```go get github.com/steve-winter/reactgonative```
 
 To use:
-`cd $MYANDROIDFOLDER
-reactgonative $MYGOPACKAGE`
+```cd $MYANDROIDFOLDER
+reactgonative $MYGOPACKAGE```
