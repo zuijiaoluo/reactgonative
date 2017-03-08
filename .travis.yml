@@ -6,12 +6,8 @@ go:
   - 1.8
   - master
 
-before_install:
-  - go get -t -v ./...
-
- script:
+script:
   - ./codecovtest.sh
-
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
