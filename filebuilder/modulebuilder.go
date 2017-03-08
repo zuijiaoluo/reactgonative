@@ -41,72 +41,72 @@ func (mb *ModuleBuilder) buildFileName(pkgName string, pkgRoot string) string {
 
 func (mb *ModuleBuilder) BuildModule(g *types.GoType) (string, error) {
 	fileName := mb.buildFileName(g.PackageName, mb.javaFile.packageRoot)
-	mb.javaFile.SetFileName(fileName)
+	mb.javaFile.setFileName(fileName)
 	err := mb.Create()
 	if err != nil {
 		return "", err
 	}
-	err = mb.javaFile.WritePackageLine(mb.createPackageName(g.PackageName, mb.javaFile.packageRoot))
+	err = mb.javaFile.writePackageLine(mb.createPackageName(g.PackageName, mb.javaFile.packageRoot))
 	if err != nil {
 		return "", err
 	}
-	err = mb.javaFile.WriteBlank(1)
+	err = mb.javaFile.writeBlank(1)
 	if err != nil {
 		return "", err
 	}
-	err = mb.BuildImports(g)
+	err = mb.buildImports(g)
 	if err != nil {
 		return "", err
 	}
 
-	err = mb.javaFile.WriteClassHeader(mb.className(g.PackageName),
+	err = mb.javaFile.writeClassHeader(mb.className(g.PackageName),
 		"ReactContextBaseJavaModule", "")
 	if err != nil {
 		return "", err
 	}
-	err = mb.javaFile.WriteBlank(1)
+	err = mb.javaFile.writeBlank(1)
 	if err != nil {
 		return "", err
 	}
-	err = mb.BuildConstructor(g)
-	if err != nil {
-		return "", err
-	}
-
-	err = mb.BuildGetName(g)
-	if err != nil {
-		return "", err
-	}
-	err = mb.javaFile.WriteBlank(1)
+	err = mb.buildConstructor(g)
 	if err != nil {
 		return "", err
 	}
 
-	err = mb.BuildReactMethods(&g.Functions, &g.Returns, g.PackageName)
+	err = mb.buildGetName(g)
 	if err != nil {
 		return "", err
 	}
-	err = mb.javaFile.WriteCloseTag()
+	err = mb.javaFile.writeBlank(1)
+	if err != nil {
+		return "", err
+	}
+
+	err = mb.buildReactMethods(&g.Functions, &g.Returns, g.PackageName)
+	if err != nil {
+		return "", err
+	}
+	err = mb.javaFile.writeCloseTag()
 	if err != nil {
 		return "", err
 	}
 	return mb.className(g.PackageName), nil
 }
 
-func (mb *ModuleBuilder) BuildConstructor(g *types.GoType) error {
-	err := mb.javaFile.WriteConstructorHeader(mb.className(g.PackageName), mb.constructorParams())
+func (mb *ModuleBuilder) buildConstructor(g *types.GoType) error {
+	err := mb.javaFile.writeConstructorHeader(mb.className(g.PackageName), mb.constructorParams())
 	if err != nil {
 		return err
 	}
-	err = mb.javaFile.WriteSuper(context)
+	err = mb.javaFile.writeSuper(context)
 	if err != nil {
 		return err
 	}
-	err = mb.javaFile.WriteCloseTag()
+	err = mb.javaFile.writeCloseTag()
 	if err != nil {
 		return err
 	}
-	err = mb.javaFile.WriteBlank(1)
+	err = mb.javaFile.writeBlank(1)
 	if err != nil {
 		return err
 	}
@@ -121,32 +121,32 @@ func (mb *ModuleBuilder) importedPackageName(packageName string) string {
 	return strings.Title(strings.ToLower(packageName))
 }
 
-func (mb *ModuleBuilder) BuildImports(g *types.GoType) error {
-	err := mb.javaFile.WriteImport("com.facebook.react.bridge.ReactApplicationContext")
+func (mb *ModuleBuilder) buildImports(g *types.GoType) error {
+	err := mb.javaFile.writeImport("com.facebook.react.bridge.ReactApplicationContext")
 	if err != nil {
 		return err
 	}
-	err = mb.javaFile.WriteImport("com.facebook.react.bridge.Promise")
+	err = mb.javaFile.writeImport("com.facebook.react.bridge.Promise")
 	if err != nil {
 		return err
 	}
-	err = mb.javaFile.WriteImport("com.facebook.react.bridge.ReactContextBaseJavaModule")
+	err = mb.javaFile.writeImport("com.facebook.react.bridge.ReactContextBaseJavaModule")
 	if err != nil {
 		return err
 	}
-	err = mb.javaFile.WriteImport("com.facebook.react.bridge.ReactMethod")
+	err = mb.javaFile.writeImport("com.facebook.react.bridge.ReactMethod")
 	if err != nil {
 		return err
 	}
-	err = mb.javaFile.WriteImport("com.facebook.react.bridge.ReactMethod")
+	err = mb.javaFile.writeImport("com.facebook.react.bridge.ReactMethod")
 	if err != nil {
 		return err
 	}
-	err = mb.javaFile.WriteImport(mb.goImport(g.PackageName))
+	err = mb.javaFile.writeImport(mb.goImport(g.PackageName))
 	if err != nil {
 		return err
 	}
-	err = mb.javaFile.WriteBlank(1)
+	err = mb.javaFile.writeBlank(1)
 	if err != nil {
 		return err
 	}
@@ -159,11 +159,11 @@ func (mb *ModuleBuilder) goImport(packageName string) string {
 }
 
 func (mb *ModuleBuilder) Close() error {
-	return mb.javaFile.Close()
+	return mb.javaFile.close()
 }
 
 func (mb *ModuleBuilder) Create() error {
-	return mb.javaFile.CreateFile()
+	return mb.javaFile.createFile()
 }
 
 func (mb *ModuleBuilder) constructorParams() map[string]string {
@@ -172,30 +172,30 @@ func (mb *ModuleBuilder) constructorParams() map[string]string {
 	return params
 }
 
-func (mb *ModuleBuilder) BuildGetName(g *types.GoType) error {
-	err := mb.javaFile.WriteAnnotation("Override")
+func (mb *ModuleBuilder) buildGetName(g *types.GoType) error {
+	err := mb.javaFile.writeAnnotation("Override")
 	if err != nil {
 		return err
 	}
-	err = mb.javaFile.WriteMethodHeader("String", "getName", nil)
+	err = mb.javaFile.writeMethodHeader("String", "getName", nil)
 	if err != nil {
 		return err
 	}
 
-	err = mb.javaFile.WriteReturnStatic(mb.className(g.PackageName))
+	err = mb.javaFile.writeReturnStatic(mb.className(g.PackageName))
 	if err != nil {
 		return err
 	}
-	err = mb.javaFile.WriteCloseTag()
+	err = mb.javaFile.writeCloseTag()
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (mb *ModuleBuilder) BuildReactMethods(g *[]types.GoFunction, ret *[]types.GoParams, pkgName string) error {
+func (mb *ModuleBuilder) buildReactMethods(g *[]types.GoFunction, ret *[]types.GoParams, pkgName string) error {
 	for i, val := range *g {
-		err := mb.BuildReactMethod(&val, &(*ret)[i], pkgName)
+		err := mb.buildReactMethod(&val, &(*ret)[i], pkgName)
 		if err != nil {
 			return err
 		}
@@ -203,8 +203,8 @@ func (mb *ModuleBuilder) BuildReactMethods(g *[]types.GoFunction, ret *[]types.G
 	return nil
 }
 
-func (mb *ModuleBuilder) BuildReactMethod(g *types.GoFunction, ret *types.GoParams, pkgName string) error {
-	err := mb.javaFile.WriteAnnotation("ReactMethod")
+func (mb *ModuleBuilder) buildReactMethod(g *types.GoFunction, ret *types.GoParams, pkgName string) error {
+	err := mb.javaFile.writeAnnotation("ReactMethod")
 
 	if err != nil {
 		return err
@@ -218,11 +218,11 @@ func (mb *ModuleBuilder) BuildReactMethod(g *types.GoFunction, ret *types.GoPara
 		return err
 	}
 
-	err = mb.javaFile.WriteCloseTag()
+	err = mb.javaFile.writeCloseTag()
 	if err != nil {
 		return err
 	}
-	err = mb.javaFile.WriteBlank(1)
+	err = mb.javaFile.writeBlank(1)
 	if err != nil {
 		return err
 	}
@@ -241,12 +241,12 @@ func (mb *ModuleBuilder) methodMain(g *types.GoFunction, ret *types.GoParams, pk
 	if ret.T != "" {
 		methodCall = types.GoToJava(ret.T) + " returnParam1 = " + methodCall
 	}
-	err := mb.javaFile.WriteMethodBody(methodCall)
+	err := mb.javaFile.writeMethodBody(methodCall)
 	if err != nil {
 		return err
 	}
 	if ret.T != "" {
-		err = mb.javaFile.WriteMethodBody("promise.resolve(returnParam1)")
+		err = mb.javaFile.writeMethodBody("promise.resolve(returnParam1)")
 		if err != nil {
 			return err
 		}
@@ -255,7 +255,7 @@ func (mb *ModuleBuilder) methodMain(g *types.GoFunction, ret *types.GoParams, pk
 }
 
 func (mb *ModuleBuilder) buildMethodCallParams(g *[]types.GoParams) string {
-	paramsMap := mb.ParamsToMap(*g)
+	paramsMap := mb.paramsToMap(*g)
 	resp := ""
 	for _, val := range paramsMap {
 		if len(resp) != 0 {
@@ -267,7 +267,7 @@ func (mb *ModuleBuilder) buildMethodCallParams(g *[]types.GoParams) string {
 }
 
 func (mb *ModuleBuilder) wrapTryCatch(body func() error, g *types.GoFunction, ret *types.GoParams, catchMsg string) error {
-	err := mb.javaFile.WriteTry()
+	err := mb.javaFile.writeTry()
 	if err != nil {
 		return err
 	}
@@ -275,16 +275,16 @@ func (mb *ModuleBuilder) wrapTryCatch(body func() error, g *types.GoFunction, re
 	if err != nil {
 		return err
 	}
-	return mb.javaFile.WriteCatch("promise.reject(\"Error\", e)")
+	return mb.javaFile.writeCatch("promise.reject(\"Error\", e)")
 }
 
 func (mb *ModuleBuilder) buildMethodHeader(g *types.GoFunction, ret *types.GoParams) error {
-	paramMap := mb.ParamsToMap(g.Params)
+	paramMap := mb.paramsToMap(g.Params)
 	paramMap["Promise"] = "promise"
-	return mb.javaFile.WriteMethodHeader("void", strings.ToLower(g.Name), paramMap)
+	return mb.javaFile.writeMethodHeader("void", strings.ToLower(g.Name), paramMap)
 }
 
-func (mb *ModuleBuilder) ParamsToMap(params []types.GoParams) map[string]string {
+func (mb *ModuleBuilder) paramsToMap(params []types.GoParams) map[string]string {
 	pmap := make(map[string]string)
 	for _, k := range params {
 		pmap[k.T] = k.Name

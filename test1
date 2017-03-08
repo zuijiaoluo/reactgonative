@@ -1,1 +1,0 @@
-package /Users/SteveWinter/Development/golang/src/github.com/steve-winter/reactgonative/generated.bridge.hello;import com.facebook.react.bridge.ReactApplicationContext;import com.facebook.react.bridge.ReactContextBaseJavaModule;import com.facebook.react.bridge.ReactMethod;import com.facebook.react.bridge.ReactMethod;import hello.HELLO;

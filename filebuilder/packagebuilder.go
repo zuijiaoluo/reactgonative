@@ -38,61 +38,61 @@ func (pb *PackageBuilder) buildFileName(pkgName string, pkgRoot string) string {
 
 func (pb *PackageBuilder) BuildPackage(typeString string, packageName string) error {
 	fileName := pb.buildFileName(packageName, pb.javaFile.packageRoot)
-	pb.javaFile.SetFileName(fileName)
+	pb.javaFile.setFileName(fileName)
 	err := pb.Create()
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WritePackageLine(pb.createPackageName(packageName, pb.javaFile.packageRoot))
+	err = pb.javaFile.writePackageLine(pb.createPackageName(packageName, pb.javaFile.packageRoot))
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteBlank(1)
+	err = pb.javaFile.writeBlank(1)
 	if err != nil {
 		return err
 	}
-	err = pb.BuildImports()
+	err = pb.buildImports()
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteBlank(1)
+	err = pb.javaFile.writeBlank(1)
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteClassHeader(pb.className(packageName),
+	err = pb.javaFile.writeClassHeader(pb.className(packageName),
 		"", "ReactPackage")
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteBlank(1)
+	err = pb.javaFile.writeBlank(1)
 	if err != nil {
 		return err
 	}
-	err = pb.BuildNativeModulesMethod(packageName)
+	err = pb.buildNativeModulesMethod(packageName)
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteBlank(1)
+	err = pb.javaFile.writeBlank(1)
 	if err != nil {
 		return err
 	}
-	err = pb.BuildCreateJSModulesMethod()
+	err = pb.buildCreateJSModulesMethod()
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteBlank(1)
+	err = pb.javaFile.writeBlank(1)
 	if err != nil {
 		return err
 	}
-	err = pb.BuildCreateViewManagersMethod()
+	err = pb.buildCreateViewManagersMethod()
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteBlank(1)
+	err = pb.javaFile.writeBlank(1)
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteCloseTag()
+	err = pb.javaFile.writeCloseTag()
 	if err != nil {
 		return err
 	}
@@ -100,7 +100,7 @@ func (pb *PackageBuilder) BuildPackage(typeString string, packageName string) er
 	return nil
 }
 
-func (pb *PackageBuilder) BuildImports() error {
+func (pb *PackageBuilder) buildImports() error {
 	imports := [8]string{
 		"com.facebook.react.ReactPackage",
 		"com.facebook.react.bridge.JavaScriptModule",
@@ -113,7 +113,7 @@ func (pb *PackageBuilder) BuildImports() error {
 	}
 	for _, val := range imports {
 		if !strings.EqualFold(val, "") {
-			err := pb.javaFile.WriteImport(val)
+			err := pb.javaFile.writeImport(val)
 			if err != nil {
 				return err
 			}
@@ -122,72 +122,72 @@ func (pb *PackageBuilder) BuildImports() error {
 	return nil
 }
 
-func (pb *PackageBuilder) BuildNativeModulesMethod(packageName string) error {
+func (pb *PackageBuilder) buildNativeModulesMethod(packageName string) error {
 	params := make(map[string]string)
 	params["ReactApplicationContext"] = context
-	err := pb.javaFile.WriteAnnotation("Override")
+	err := pb.javaFile.writeAnnotation("Override")
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteMethodHeader("List<NativeModule>", "createNativeModules", params)
+	err = pb.javaFile.writeMethodHeader("List<NativeModule>", "createNativeModules", params)
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteMethodBody("List<NativeModule> modules = new ArrayList<>()")
+	err = pb.javaFile.writeMethodBody("List<NativeModule> modules = new ArrayList<>()")
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteMethodBody("modules.add(new " + pb.moduleName(packageName) + "(" + context + "))")
+	err = pb.javaFile.writeMethodBody("modules.add(new " + pb.moduleName(packageName) + "(" + context + "))")
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteReturnDynamic("modules")
+	err = pb.javaFile.writeReturnDynamic("modules")
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteCloseTag()
+	err = pb.javaFile.writeCloseTag()
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (pb *PackageBuilder) BuildCreateJSModulesMethod() error {
-	err := pb.javaFile.WriteAnnotation("Override")
+func (pb *PackageBuilder) buildCreateJSModulesMethod() error {
+	err := pb.javaFile.writeAnnotation("Override")
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteMethodHeader("List <Class<? extends JavaScriptModule>>", "createJSModules", nil)
+	err = pb.javaFile.writeMethodHeader("List <Class<? extends JavaScriptModule>>", "createJSModules", nil)
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteReturnDynamic("Collections.emptyList()")
+	err = pb.javaFile.writeReturnDynamic("Collections.emptyList()")
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteCloseTag()
+	err = pb.javaFile.writeCloseTag()
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (pb *PackageBuilder) BuildCreateViewManagersMethod() error {
+func (pb *PackageBuilder) buildCreateViewManagersMethod() error {
 	params := make(map[string]string)
 	params["ReactApplicationContext"] = context
-	err := pb.javaFile.WriteAnnotation("Override")
+	err := pb.javaFile.writeAnnotation("Override")
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteMethodHeader("List<ViewManager>", "createViewManagers", params)
+	err = pb.javaFile.writeMethodHeader("List<ViewManager>", "createViewManagers", params)
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteReturnDynamic("Collections.emptyList()")
+	err = pb.javaFile.writeReturnDynamic("Collections.emptyList()")
 	if err != nil {
 		return err
 	}
-	err = pb.javaFile.WriteCloseTag()
+	err = pb.javaFile.writeCloseTag()
 	if err != nil {
 		return err
 	}
@@ -195,11 +195,11 @@ func (pb *PackageBuilder) BuildCreateViewManagersMethod() error {
 }
 
 func (mb *PackageBuilder) Close() error {
-	return mb.javaFile.Close()
+	return mb.javaFile.close()
 }
 
 func (mb *PackageBuilder) Create() error {
-	return mb.javaFile.CreateFile()
+	return mb.javaFile.createFile()
 }
 
 func (mb *PackageBuilder) className(packageName string) string {

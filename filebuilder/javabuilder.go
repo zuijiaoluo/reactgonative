@@ -25,7 +25,7 @@ func NewJavaFile(name string, root string) (javaFile *JavaFile) {
 	}
 }
 
-func (jf *JavaFile) SetFileName(name string) error {
+func (jf *JavaFile) setFileName(name string) error {
 	if jf.f != nil {
 		return errors.New("File already open")
 	}
@@ -33,7 +33,7 @@ func (jf *JavaFile) SetFileName(name string) error {
 	return nil
 }
 
-func (jf *JavaFile) CreateFile() error {
+func (jf *JavaFile) createFile() error {
 	dir, _ := filepath.Split(jf.fileName)
 	err := os.MkdirAll(dir, 0777)
 	if err != nil {
@@ -47,21 +47,21 @@ func (jf *JavaFile) CreateFile() error {
 	return nil
 }
 
-func (jf *JavaFile) WritePackageLine(packageName string) error {
+func (jf *JavaFile) writePackageLine(packageName string) error {
 	err := jf.writeLineFlat("package " + packageName + ";")
 	return err
 }
 
-func (jf *JavaFile) WriteImport(importLine string) error {
+func (jf *JavaFile) writeImport(importLine string) error {
 	return jf.writeLineFlat("import " + importLine + ";")
 }
 
-func (jf *JavaFile) WriteClassHeader(className string, extendsName string, implementsName string) error {
+func (jf *JavaFile) writeClassHeader(className string, extendsName string, implementsName string) error {
 	line := "public class " + className + jf.extends(extendsName) + jf.implements(implementsName)
 	return jf.writeLine(line + " {")
 }
 
-func (jf *JavaFile) WriteConstructorHeader(className string, params map[string]string) error {
+func (jf *JavaFile) writeConstructorHeader(className string, params map[string]string) error {
 	return jf.writeLine(jf.constructorHeader(className, params))
 }
 
@@ -70,23 +70,23 @@ func (jf *JavaFile) constructorHeader(className string, params map[string]string
 	return line
 }
 
-func (jf *JavaFile) WriteSuper(param string) error {
+func (jf *JavaFile) writeSuper(param string) error {
 	return jf.writeLine("super(" + param + ");")
 }
 
-func (jf *JavaFile) WriteAnnotation(annot string) error {
+func (jf *JavaFile) writeAnnotation(annot string) error {
 	return jf.writeLineN("@" + annot)
 }
 
-func (jf *JavaFile) WriteMethodHeader(returnType string, methodName string, params map[string]string) error {
+func (jf *JavaFile) writeMethodHeader(returnType string, methodName string, params map[string]string) error {
 	return jf.writeLine("public " + returnType + " " + methodName + "(" + jf.methodParams(params) + ") {")
 }
 
-func (jf *JavaFile) WriteMethodBody(body string) error {
+func (jf *JavaFile) writeMethodBody(body string) error {
 	return jf.writeLineN(body + ";")
 }
 
-func (jf *JavaFile) WriteCloseTag() error {
+func (jf *JavaFile) writeCloseTag() error {
 	return jf.writeLine("}")
 }
 
@@ -116,11 +116,11 @@ func (jf *JavaFile) classModifier(modifier string, modifierName string) string {
 	return ""
 }
 
-func (jf *JavaFile) WriteTry() error {
+func (jf *JavaFile) writeTry() error {
 	return jf.writeLine("try {")
 }
 
-func (jf *JavaFile) WriteCatch(msg string) error {
+func (jf *JavaFile) writeCatch(msg string) error {
 	err := jf.writeLine("} catch(Exception e) {")
 	if err != nil {
 		return err
@@ -132,11 +132,11 @@ func (jf *JavaFile) WriteCatch(msg string) error {
 	return jf.writeLineN("}")
 }
 
-func (jf *JavaFile) WriteReturnDynamic(ret string) error {
+func (jf *JavaFile) writeReturnDynamic(ret string) error {
 	return jf.writeLine("return " + ret + ";")
 }
 
-func (jf *JavaFile) WriteReturnStatic(ret string) error {
+func (jf *JavaFile) writeReturnStatic(ret string) error {
 	return jf.writeLine("return \"" + ret + "\";")
 
 }
@@ -198,7 +198,7 @@ func (jf *JavaFile) writeLineFlat(line string) error {
 	return err
 }
 
-func (jf *JavaFile) WriteBlank(num int) error {
+func (jf *JavaFile) writeBlank(num int) error {
 	newLine := ""
 	for i := 0; i < num; i++ {
 		newLine = newLine + "\n"
@@ -207,11 +207,7 @@ func (jf *JavaFile) WriteBlank(num int) error {
 	return err
 }
 
-func (jf *JavaFile) Test() {
-
-}
-
-func (jf *JavaFile) Close() error {
+func (jf *JavaFile) close() error {
 
 	return jf.f.Close()
 }
