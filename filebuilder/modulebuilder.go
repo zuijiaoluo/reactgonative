@@ -9,10 +9,13 @@ import (
 
 var context = "reactContext"
 
+// ModuleBuilder is the creator of each Classes boilerplate
 type ModuleBuilder struct {
 	javaFile *JavaFile
 }
 
+// NewModuleBuilder returns a new ModuleBuilder containing a JavaFile.
+// The file is not opened or created at this point.
 func NewModuleBuilder(name string, root string) ModuleBuilder {
 	return ModuleBuilder{
 		javaFile: NewJavaFile(name, root),
@@ -39,10 +42,12 @@ func (mb *ModuleBuilder) buildFileName(pkgName string, pkgRoot string) string {
 	return fileName
 }
 
+//BuildModule generates the Java class with features in g.
+//Returns the className created, or an error if a write fails
 func (mb *ModuleBuilder) BuildModule(g *types.GoType) (string, error) {
 	fileName := mb.buildFileName(g.PackageName, mb.javaFile.packageRoot)
 	mb.javaFile.setFileName(fileName)
-	err := mb.Create()
+	err := mb.create()
 	if err != nil {
 		return "", err
 	}
@@ -158,11 +163,12 @@ func (mb *ModuleBuilder) goImport(packageName string) string {
 	return lowerPackage + "." + strings.Title(lowerPackage)
 }
 
+// Close will close the internal javaFile
 func (mb *ModuleBuilder) Close() error {
 	return mb.javaFile.close()
 }
 
-func (mb *ModuleBuilder) Create() error {
+func (mb *ModuleBuilder) create() error {
 	return mb.javaFile.createFile()
 }
 

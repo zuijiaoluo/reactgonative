@@ -5,10 +5,13 @@ import (
 	"strings"
 )
 
+// PackageBuilder is the creator of each Packages boilerplate
 type PackageBuilder struct {
 	javaFile *JavaFile
 }
 
+// NewPackageBuilder returns a new PackageBuilder containing a JavaFile.
+// The file is not opened or created at this point.
 func NewPackageBuilder(name string, root string) PackageBuilder {
 	return PackageBuilder{
 		javaFile: NewJavaFile(name, root),
@@ -36,10 +39,12 @@ func (pb *PackageBuilder) buildFileName(pkgName string, pkgRoot string) string {
 	return fileName
 }
 
-func (pb *PackageBuilder) BuildPackage(typeString string, packageName string) error {
+// BuildPackage generates the package boilerplate for the inputted packageName.
+// An error is returned if any write fail
+func (pb *PackageBuilder) BuildPackage(packageName string) error {
 	fileName := pb.buildFileName(packageName, pb.javaFile.packageRoot)
 	pb.javaFile.setFileName(fileName)
-	err := pb.Create()
+	err := pb.create()
 	if err != nil {
 		return err
 	}
@@ -194,22 +199,23 @@ func (pb *PackageBuilder) buildCreateViewManagersMethod() error {
 	return nil
 }
 
-func (mb *PackageBuilder) Close() error {
-	return mb.javaFile.close()
+// Close will close the internal JavaFile
+func (pb *PackageBuilder) Close() error {
+	return pb.javaFile.close()
 }
 
-func (mb *PackageBuilder) Create() error {
-	return mb.javaFile.createFile()
+func (pb *PackageBuilder) create() error {
+	return pb.javaFile.createFile()
 }
 
-func (mb *PackageBuilder) className(packageName string) string {
-	return mb.importedPackageName(packageName) + "Package"
+func (pb *PackageBuilder) className(packageName string) string {
+	return pb.importedPackageName(packageName) + "Package"
 }
 
-func (mb *PackageBuilder) moduleName(packageName string) string {
-	return mb.importedPackageName(packageName) + "Module"
+func (pb *PackageBuilder) moduleName(packageName string) string {
+	return pb.importedPackageName(packageName) + "Module"
 }
 
-func (mb *PackageBuilder) importedPackageName(packageName string) string {
+func (pb *PackageBuilder) importedPackageName(packageName string) string {
 	return strings.Title(strings.ToLower(packageName))
 }
