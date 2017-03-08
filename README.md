@@ -3,8 +3,10 @@
 [![Build Status](https://travis-ci.org/steve-winter/reactgonative.svg?branch=master)](https://travis-ci.org/steve-winter/reactgonative)
 [![Code Climate](https://codeclimate.com/github/steve-winter/reactgonative/badges/gpa.svg)](https://codeclimate.com/github/steve-winter/reactgonative)
 [![Issue Count](https://codeclimate.com/github/steve-winter/reactgonative/badges/issue_count.svg)](https://codeclimate.com/github/steve-winter/reactgonative)
+[![Code Coverage](https://codecov.io/github/steve-winter/reactgonative/coverage.svg?precision=1)](https://codecov.io/github/steve-winter/reactgonative)
 [![Go Report Card](https://goreportcard.com/badge/github.com/steve-winter/reactgonative)](https://goreportcard.com/report/github.com/steve-winter/reactgonative)
 [![GoDoc](https://godoc.org/github.com/steve-winter/reactgonative?status.svg)](https://godoc.org/github.com/steve-winter/reactgonative)
+[![Github Releases](https://img.shields.io/github/downloads/atom/atom/latest/total.svg)](https://github.com/steve-winter/reactgonative)
 
 ## Current Status
 
