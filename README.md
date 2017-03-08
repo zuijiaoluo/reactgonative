@@ -34,6 +34,6 @@ $ go get -u go get github.com/steve-winter/reactgonative
 To use:
 
 ```sh
-cd $MYANDROIDFOLDER
-reactgonative $MYGOPACKAGE
+$ cd $MYANDROIDFOLDER
+$ reactgonative $MYGOPACKAGE
 ```
