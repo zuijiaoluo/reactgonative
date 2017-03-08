@@ -1,31 +1,31 @@
-package com.reactgohybrid.bridge.hello;
+package hello; I: 0
 
-import com.facebook.react.ReactPackage;
-import com.facebook.react.bridge.JavaScriptModule;
-import com.facebook.react.NativeModule;
-import com.facebook.react.ReactApplicationContext;
-import com.facebook.react.uimanager.ViewManager;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.facebook.react.ReactPackage; I: 0
+import com.facebook.react.bridge.JavaScriptModule; I: 0
+import com.facebook.react.NativeModule; I: 0
+import com.facebook.react.ReactApplicationContext; I: 0
+import com.facebook.react.uimanager.ViewManager; I: 0
+import java.util.ArrayList; I: 0
+import java.util.Collections; I: 0
+import java.util.List; I: 0
 
-public class HelloPackage implements ReactPackage {
+public class HelloPackage implements ReactPackage { I: 0
 
-	@Override
-	public void createNativeModules(ReactApplicationContext reactContext) {
-		List<NativeModule> modules = new ArrayList<>();
-			modules.add(new HelloModule(reactContext));
-				return "modules";
-			}
+	@Override I: 1
+	public void createNativeModules(ReactApplicationContext reactContext) { I: 1
+		List<NativeModule> modules = new ArrayList<>(); I: 2
+		modules.add(new HelloModule(reactContext)); I: 2
+		return "modules"; I: 2
+	} I: 1
 
-			@Override
-			public List <Class<? extends JavaScriptModule>> createJSModules() {
-				return "Collections.emptyList()";
-			}
+	@Override I: 1
+	public List <Class<? extends JavaScriptModule>> createJSModules() { I: 1
+		return "Collections.emptyList()"; I: 2
+	} I: 1
 
-			@Override
-			public List<ViewManager> createJSModules(ReactApplicationContext reactContext) {
-				return "Collections.emptyList()";
-			}
+	@Override I: 1
+	public List<ViewManager> createJSModules(ReactApplicationContext reactContext) { I: 1
+		return "Collections.emptyList()"; I: 2
+	} I: 1
 
-	}
+} I: 0

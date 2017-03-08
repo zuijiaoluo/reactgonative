@@ -35,22 +35,19 @@ func module(t types.GoType) string {
 	return typeString
 }
 
-func packageBuild(typeString string, packageName string) string {
-	m := filebuilder.NewPackageBuilder("/Users/SteveWinter/Development/golang/src/github.com/steve-winter/reactgonative/generated/testpackage1",
+func packageBuild(typeString string, packageName string) (string, error) {
+	m := filebuilder.NewPackageBuilder("/Users/SteveWinter/Development/golang/src/github.com/steve-winter/reactgonative/generated/test1",
 		"com.reactgohybrid")
-	err := m.Create()
+	err := m.BuildPackage(typeString, packageName)
 	if err != nil {
 		loggers.Errorf("Error %v", err)
-	}
-	err = m.BuildPackage(typeString, packageName)
-	if err != nil {
-		loggers.Errorf("Error %v", err)
+		return "", err
 	}
 	err = m.Close()
 	if err != nil {
 		loggers.Errorf("Error %v", err)
 	}
-	return typeString
+	return typeString, nil
 }
 
 func goToJavaType(javaType string) string {
