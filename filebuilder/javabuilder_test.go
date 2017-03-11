@@ -89,7 +89,7 @@ func TestCreateFile(t *testing.T) {
 			jf := NewJavaFile("/tmp/reactgonative/testfile_createFileCreated/createFile2", "testFileRoot")
 			err := jf.createFile()
 			Convey("Then the folder generation should generate an error", func() {
-				So(err.Error(), ShouldEndWith, "not a directory")
+				So(err, ShouldNotEqual, nil)
 			})
 		})
 	})
