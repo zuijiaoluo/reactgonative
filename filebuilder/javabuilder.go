@@ -2,6 +2,7 @@ package filebuilder
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -50,16 +51,18 @@ func (jf *JavaFile) createFile() error {
 }
 
 func (jf *JavaFile) writePackageLine(packageName string) error {
-	err := jf.writeLineFlat("package " + packageName + ";")
+	line := fmt.Sprintf("package %s;", packageName)
+	err := jf.writeLineFlat(line)
 	return err
 }
 
 func (jf *JavaFile) writeImport(importLine string) error {
-	return jf.writeLineFlat("import " + importLine + ";")
+	line := fmt.Sprintf("import %s;", importLine)
+	return jf.writeLineFlat(line)
 }
 
 func (jf *JavaFile) writeClassHeader(className string, extendsName string, implementsName string) error {
-	line := "public class " + className + jf.extends(extendsName) + jf.implements(implementsName)
+	line := fmt.Sprintf("public class %s%s%s", className, jf.extends(extendsName), jf.implements(implementsName))
 	return jf.writeLine(line + " {")
 }
 
