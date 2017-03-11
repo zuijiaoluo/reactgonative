@@ -286,6 +286,7 @@ func (mb *ModuleBuilder) wrapTryCatch(body func() error, g *types.GoFunction, re
 
 func (mb *ModuleBuilder) buildMethodHeader(g *types.GoFunction, ret *types.GoParams) error {
 	params := make([]types.GoParams, 0)
+	params = append(params, *ret)
 	params = append(params, types.GoParams{Name: "promise", T: "Promise"})
 	return mb.javaFile.writeMethodHeader("void", strings.ToLower(g.Name), params)
 }

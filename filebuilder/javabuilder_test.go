@@ -217,6 +217,34 @@ func TestWriteConstructorHeader(t *testing.T) {
 	})
 }
 
+func TestWriteSuper(t *testing.T) {
+	Convey("Given Javafile object created", t, func() {
+		cf := NewJavaFile("/tmp/reactgonative/testfile_writeSuper1", "testFileRoot")
+		Convey("When the file is open and write attempted without params", func() {
+			cf.createFile()
+			err := cf.writeSuper("")
+			Convey("Then no error is generated", func() {
+				So(err, ShouldEqual, nil)
+			})
+			Convey("And the end line of the file is the super line", func() {
+				So(readLastLines("/tmp/reactgonative/testfile_writeSuper1", 1)[0],
+					ShouldEqual, "super();")
+			})
+		})
+		Convey("When the file is open and write attempted with param", func() {
+			cf.createFile()
+			err := cf.writeSuper("params")
+			Convey("Then no error is generated", func() {
+				So(err, ShouldEqual, nil)
+			})
+			Convey("And the end line of the file is the super line", func() {
+				So(readLastLines("/tmp/reactgonative/testfile_writeSuper1", 1)[0],
+					ShouldEqual, "super(params);")
+			})
+		})
+	})
+}
+
 func readLastLines(fileName string, lineCount int) []string {
 	fileHandle, _ := os.Open(fileName)
 	defer fileHandle.Close()
