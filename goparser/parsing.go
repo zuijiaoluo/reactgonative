@@ -1,7 +1,6 @@
 package goparser
 
 import (
-	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -112,15 +111,12 @@ func parseReturn(x *ast.FuncDecl, m *types.GoType) {
 	m.Returns = append(m.Returns, types.GoParams{})
 	if x.Type.Results != nil {
 		for _, parameterList := range x.Type.Results.List {
-			fmt.Printf("PARAMS1: %v\n", parameterList.Names)
 			switch v := parameterList.Type.(type) {
 			case *ast.Ident:
 				// specialType := parameterList.Type.(*ast.Ident)
 				m.Returns[len(m.Returns)-1].T = v.Name
-				fmt.Printf("PARAMS2: %v\n", v.Name)
 				for _, parameterName := range parameterList.Names {
 					m.Returns[len(m.Returns)-1].Name = parameterName.Name
-					fmt.Printf("PARAMS3: %v\n", parameterName.Name)
 				}
 			case *ast.ArrayType:
 				// fmt.Printf("ARRAYTYPE %s uuu %v\n", x.Name.String(), v.Elt.(*ast.SelectorExpr).Sel.Obj)

@@ -47,8 +47,8 @@ func TestBuildPackageFolder(t *testing.T) {
 	Convey("Given gopath is set", t, func() {
 		Convey("When a package name ok pkg is used", func() {
 			folder := buildPackageFolder("pkg")
-			Convey("Then the folder name should be /Users/SteveWinter/Development/golang/src/pkg", func() {
-				So(folder, ShouldEqual, "/Users/SteveWinter/Development/golang/src/pkg")
+			Convey("Then the folder name should be valid", func() {
+				So(folder, ShouldEqual, filepath.Join(realGoPath, "src/pkg"))
 			})
 		})
 	})
