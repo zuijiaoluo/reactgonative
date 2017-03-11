@@ -3,6 +3,8 @@ package filebuilder
 import (
 	"path/filepath"
 	"strings"
+
+	"github.com/steve-winter/reactgonative/types"
 )
 
 // PackageBuilder is the creator of each Packages boilerplate
@@ -128,8 +130,8 @@ func (pb *PackageBuilder) buildImports() error {
 }
 
 func (pb *PackageBuilder) buildNativeModulesMethod(packageName string) error {
-	params := make(map[string]string)
-	params["ReactApplicationContext"] = context
+	params := make([]types.GoParams, 0)
+	params = append(params, types.GoParams{Name: context, T: "ReactApplicationContext"})
 	err := pb.javaFile.writeAnnotation("Override")
 	if err != nil {
 		return err
@@ -178,8 +180,8 @@ func (pb *PackageBuilder) buildCreateJSModulesMethod() error {
 }
 
 func (pb *PackageBuilder) buildCreateViewManagersMethod() error {
-	params := make(map[string]string)
-	params["ReactApplicationContext"] = context
+	params := make([]types.GoParams, 0)
+	params = append(params, types.GoParams{Name: context, T: "ReactApplicationContext"})
 	err := pb.javaFile.writeAnnotation("Override")
 	if err != nil {
 		return err

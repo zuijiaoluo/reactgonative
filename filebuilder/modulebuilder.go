@@ -172,9 +172,9 @@ func (mb *ModuleBuilder) create() error {
 	return mb.javaFile.createFile()
 }
 
-func (mb *ModuleBuilder) constructorParams() map[string]string {
-	params := make(map[string]string)
-	params["ReactApplicationContext"] = context
+func (mb *ModuleBuilder) constructorParams() []types.GoParams {
+	params := make([]types.GoParams, 0)
+	params = append(params, types.GoParams{Name: context, T: "ReactApplicationContext"})
 	return params
 }
 
@@ -267,7 +267,7 @@ func (mb *ModuleBuilder) buildMethodCallParams(g *[]types.GoParams) string {
 		if len(resp) != 0 {
 			resp = resp + ", "
 		}
-		resp = resp + val
+		resp = resp + val.Name
 	}
 	return resp
 }
@@ -285,15 +285,17 @@ func (mb *ModuleBuilder) wrapTryCatch(body func() error, g *types.GoFunction, re
 }
 
 func (mb *ModuleBuilder) buildMethodHeader(g *types.GoFunction, ret *types.GoParams) error {
-	paramMap := mb.paramsToMap(g.Params)
-	paramMap["Promise"] = "promise"
-	return mb.javaFile.writeMethodHeader("void", strings.ToLower(g.Name), paramMap)
+	params := make([]types.GoParams, 0)
+	params = append(params, types.GoParams{Name: "promise", T: "Promise"})
+	return mb.javaFile.writeMethodHeader("void", strings.ToLower(g.Name), params)
 }
 
-func (mb *ModuleBuilder) paramsToMap(params []types.GoParams) map[string]string {
-	pmap := make(map[string]string)
-	for _, k := range params {
-		pmap[k.T] = k.Name
-	}
-	return pmap
+func (mb *ModuleBuilder) paramsToMap(params []types.GoParams) []types.GoParams {
+	// count := 0
+	// for v := range params {
+	// 	for _, k := range v {
+	// 		pmap[k.Name] = k.T
+	// 	}
+	// }
+	return params
 }

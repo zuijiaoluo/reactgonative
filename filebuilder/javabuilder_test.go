@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
+	"github.com/steve-winter/reactgonative/types"
 )
 
 func TestNewJavaFile(t *testing.T) {
@@ -149,15 +150,68 @@ func TestWriteImport(t *testing.T) {
 func TestWriteClassHeader(t *testing.T) {
 	Convey("Given Javafile object created", t, func() {
 		cf := NewJavaFile("/tmp/reactgonative/testfile_writeClassHeader1", "testFileRoot")
-		Convey("When the file is open and writing class header attempted", func() {
+		Convey("When the file is open and writing class header with extends and interface attempted", func() {
 			cf.createFile()
 			err := cf.writeClassHeader("MyClassName", "ExtendsName", "InterfaceName")
 			Convey("Then no error is generated", func() {
 				So(err, ShouldEqual, nil)
 			})
-			Convey("And the end line of the file is packageName", func() {
+			Convey("And the end line of the file is the class header", func() {
 				So(readLastLines("/tmp/reactgonative/testfile_writeClassHeader1", 1)[0],
 					ShouldEqual, "public class MyClassName extends ExtendsName implements InterfaceName {")
+			})
+		})
+		Convey("When the file is open and writing class header with only extends attempted", func() {
+			cf.createFile()
+			err := cf.writeClassHeader("MyClassName", "ExtendsName", "")
+			Convey("Then no error is generated", func() {
+				So(err, ShouldEqual, nil)
+			})
+			Convey("And the end line of the file is the class header", func() {
+				So(readLastLines("/tmp/reactgonative/testfile_writeClassHeader1", 1)[0],
+					ShouldEqual, "public class MyClassName extends ExtendsName {")
+			})
+		})
+		Convey("When the file is open and writing class header with only interface attempted", func() {
+			cf.createFile()
+			err := cf.writeClassHeader("MyClassName", "", "InterfaceName")
+			Convey("Then no error is generated", func() {
+				So(err, ShouldEqual, nil)
+			})
+			Convey("And the end line of the file is the class header", func() {
+				So(readLastLines("/tmp/reactgonative/testfile_writeClassHeader1", 1)[0],
+					ShouldEqual, "public class MyClassName implements InterfaceName {")
+			})
+		})
+	})
+}
+
+func TestWriteConstructorHeader(t *testing.T) {
+	Convey("Given Javafile object created", t, func() {
+		cf := NewJavaFile("/tmp/reactgonative/testfile_writeConstructorHeader1", "testFileRoot")
+		Convey("When the file is open and write attempted without params", func() {
+			cf.createFile()
+			err := cf.writeConstructorHeader("MyClassName", nil)
+			Convey("Then no error is generated", func() {
+				So(err, ShouldEqual, nil)
+			})
+			Convey("And the end line of the file is the constructor header", func() {
+				So(readLastLines("/tmp/reactgonative/testfile_writeConstructorHeader1", 1)[0],
+					ShouldEqual, "public MyClassName() {")
+			})
+		})
+		Convey("When the file is open and write attempted with params", func() {
+			cf.createFile()
+			params := make([]types.GoParams, 0)
+			params = append(params, types.GoParams{Name: "param1", T: "int"})
+			params = append(params, types.GoParams{Name: "param2", T: "string"})
+			err := cf.writeConstructorHeader("MyClassName", params)
+			Convey("Then no error is generated", func() {
+				So(err, ShouldEqual, nil)
+			})
+			Convey("And the end line of the file is the constructor header", func() {
+				So(readLastLines("/tmp/reactgonative/testfile_writeConstructorHeader1", 1)[0],
+					ShouldEqual, "public MyClassName(long param1, String param2) {")
 			})
 		})
 	})

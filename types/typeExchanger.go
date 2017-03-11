@@ -9,6 +9,8 @@ func GoToJava(goIn string) string {
 	switch x {
 	case "string":
 		return "String"
+	case "int":
+		return "long"
 	}
 	return goIn
 }

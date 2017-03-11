@@ -66,11 +66,11 @@ func (jf *JavaFile) writeClassHeader(className string, extendsName string, imple
 	return jf.writeLine(line + " {")
 }
 
-func (jf *JavaFile) writeConstructorHeader(className string, params map[string]string) error {
+func (jf *JavaFile) writeConstructorHeader(className string, params []types.GoParams) error {
 	return jf.writeLine(jf.constructorHeader(className, params))
 }
 
-func (jf *JavaFile) constructorHeader(className string, params map[string]string) string {
+func (jf *JavaFile) constructorHeader(className string, params []types.GoParams) string {
 	line := "public " + className + "(" + jf.methodParams(params) + ") {"
 	return line
 }
@@ -83,7 +83,7 @@ func (jf *JavaFile) writeAnnotation(annot string) error {
 	return jf.writeLineN("@" + annot)
 }
 
-func (jf *JavaFile) writeMethodHeader(returnType string, methodName string, params map[string]string) error {
+func (jf *JavaFile) writeMethodHeader(returnType string, methodName string, params []types.GoParams) error {
 	return jf.writeLine("public " + returnType + " " + methodName + "(" + jf.methodParams(params) + ") {")
 }
 
@@ -95,13 +95,13 @@ func (jf *JavaFile) writeCloseTag() error {
 	return jf.writeLine("}")
 }
 
-func (jf *JavaFile) methodParams(params map[string]string) string {
+func (jf *JavaFile) methodParams(params []types.GoParams) string {
 	line := ""
-	for j, k := range params {
+	for _, k := range params {
 		if len(line) > 0 {
 			line = line + ", "
 		}
-		line = line + types.GoToJava(j) + " " + k
+		line = line + types.GoToJava(k.T) + " " + k.Name
 	}
 	return line
 }
